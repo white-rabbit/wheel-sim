@@ -46,7 +46,7 @@ fn ground_dist(x: f32, x_wheel: f32, y_wheel: f32) -> f32 {
 }
 
 fn min_distance(x: f32, x_wheel: f32, y_wheel: f32) -> f32 {
-    let mut dx = 1.0;
+    let mut dx = 2.0;
 
     if ground_dist(x, x_wheel, y_wheel) < ground_dist(x + dx, x_wheel, y_wheel) {
         dx = -dx;

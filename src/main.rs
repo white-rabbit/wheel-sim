@@ -5,6 +5,7 @@ use bevy::{
     },
     prelude::*,
 };
+use bevy_fps_counter::FpsCounterPlugin;
 
 use wheel_phys::components::{Mass, Particle, Pos, RotVel, Vel};
 use wheel_phys::entity::WheelBundle;
@@ -72,11 +73,11 @@ fn draw_curve(
     windows: Query<&mut Window>,
     wheel_query: Query<&Pos, With<Mass>>,
 ) {
-    let window = windows.single();
+    let window = windows.single().expect("No window!");
     let width = window.resolution.width();
 
     let mut points = Vec::new();
-    let pos = wheel_query.get_single().expect("No wheel!");
+    let pos = wheel_query.single().expect("No wheel!");
 
     let left_border = -width * 0.5 + pos.0.x;
     let right_border = width * 0.5 + pos.0.x;
@@ -153,8 +154,8 @@ fn follow_wheel(
     wheel_query: Query<&Pos, Without<Particle>>,
     mut camera_query: Query<&mut Transform, With<Camera2d>>,
 ) {
-    if let Ok(pos) = wheel_query.get_single() {
-        if let Ok(mut camera_transform) = camera_query.get_single_mut() {
+    if let Ok(pos) = wheel_query.single() {
+        if let Ok(mut camera_transform) = camera_query.single_mut() {
             // Follow the wheel's X position, but keep Y stable
             camera_transform.translation.x = pos.0.x;
             camera_transform.translation.y = pos.0.y;
@@ -186,7 +187,7 @@ fn update_bloom_settings(
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.04, 0.03, 0.03)))
-        .add_plugins((DefaultPlugins, WheelPlugin))
+        .add_plugins((DefaultPlugins, WheelPlugin, FpsCounterPlugin))
         .add_systems(Startup, startup)
         .add_systems(
             Update,
